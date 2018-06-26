@@ -5,8 +5,9 @@ pre {
     border-left: $spacer-1 solid $color-border;
     margin: $spacer-3 0;
     padding-left: 16px;
-    width: (9 / 12 * 100%); // matches col-9
+    width: 100%;
     overflow-x: auto;
+    line-height: 1;
 }
 
 code {
@@ -54,7 +55,8 @@ code {
     max-width: 100%;
 
     @media (min-width: $breakpoint-lg) {
-      max-width: (12 / 10 * 100%); // make image fill width of container on desktop
+      max-width: (12 / 10 * 100%);
+      // make image fill width of container on desktop
     }
 
   }
