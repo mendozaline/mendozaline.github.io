@@ -1,0 +1,28 @@
+---
+layout: d3v4js
+---
+<article class="col-11 px-2 mx-auto mb4" itemscope itemtype="http://schema.org/BlogPosting">
+  <h1 class="h0 col-9 mx-auto text-center" itemprop="name headline">
+    {{ page.title }}
+  </h1>
+  <div class="border-top-thin text-center">
+    <p class="h3">
+      By {{ page.author }}
+      <br>
+      <time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {{ page.date | date: "%B %-d, %Y" }}
+      </time>
+    </p>
+  </div>
+
+  <div id="chart-container" class="col-11"></div>
+
+  <div class="prose" itemprop="articleBody">
+      {{ content }}
+  </div>
+
+</article>
+
+<div class="container mx-auto px-2 py-2 clearfix">
+  {% include previous-next.html %}
+</div>
