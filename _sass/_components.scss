@@ -43,6 +43,7 @@ code {
     font-size: $prose-font-size;
     margin: 0 auto 1em auto;
     width: 100%;
+    max-width: 1500px;
 
     @media (min-width: $breakpoint-lg) {
       width: $width-custom;
@@ -88,7 +89,8 @@ code {
     }
 
     @media (min-width: $breakpoint-lg) {
-      max-width: $width-custom;
+      width: $width-custom;
+      max-width: 1500px;
       margin: auto;
       padding: 0 0 0 1%;
 
