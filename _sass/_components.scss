@@ -78,7 +78,7 @@ code {
   blockquote {
     line-height: 1.5;
     margin: 0.5% 5%;
-    border-left: $spacer-1 solid $color-border;
+    border-left: $spacer-1 solid transparent;
     font-style: italic;
 
     p {
@@ -87,16 +87,17 @@ code {
     }
 
     @media (min-width: $breakpoint-lg) {
-      width: $width-custom;
+      border-left: $spacer-1 solid $color-border;
+      width: $width-custom * 0.85;
       max-width: 1500px;
-      margin: auto;
-      padding: 0 0 0 2.5%;
+      margin: 0 auto;
+      padding: 0;
 
       p {
         font-size: 30px;
         line-height: 1.5;
         width: 100%;
-        margin: 0 0 0 2.5%;
+        margin: 0 7.5% 0 2.5%;
       }
 
     }
