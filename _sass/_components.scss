@@ -41,8 +41,8 @@ code {
 
   p, ol, ul,figure, pre {
     font-size: $prose-font-size;
-    margin: 0 auto 1em auto;
-    width: 100%;
+    margin: 1.5em auto;
+    width: 95%;
     max-width: 1500px;
 
     @media (min-width: $breakpoint-lg) {
@@ -69,8 +69,6 @@ code {
     display: block;
 
     @media (min-width: $breakpoint-lg) {
-      max-width: 100%;
-      // make image fill width of container on desktop
       margin: auto;
       display: block;
     }
