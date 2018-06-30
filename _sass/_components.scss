@@ -76,26 +76,27 @@ code {
   }
 
   blockquote {
-    line-height: 1.375;
-    padding-left: 20px;
-    margin: 40px 0 40px -16px;
+    line-height: 1.5;
+    margin: 0.5% 5%;
     border-left: $spacer-1 solid $color-border;
     font-style: italic;
 
     p {
-      font-size: 24px;
+      font-size: 28px;
+      margin: 0 0 0 2.5%;
     }
 
     @media (min-width: $breakpoint-lg) {
       width: $width-custom;
       max-width: 1500px;
       margin: auto;
-      padding: 0 0 0 1%;
+      padding: 0 0 0 2.5%;
 
       p {
-        font-size: 32px;
+        font-size: 30px;
         line-height: 1.5;
         width: 100%;
+        margin: 0 0 0 2.5%;
       }
 
     }
