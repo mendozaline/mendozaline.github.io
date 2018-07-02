@@ -1,3 +1,679 @@
 <script>
-var d3,data,dataURL="https://cdn.glitch.com/f7852ab1-df81-411f-bcb2-caf33a9f835b%2Fpdx-weather.csv";function rowConvert(t){return{date:new Date(t.date),dayMin:+t.daily_temp_min,dayMax:+t.daily_temp_max,avgMin:+t.avg_temp_min,avgMax:+t.avg_temp_max,recMin:+t.rec_temp_min,recMax:+t.rec_temp_max,recMinYr:+t.rec_temp_min_yr,recMaxYr:+t.rec_temp_max_yr,cRain:t.daily_precip,recRain:+t.daily_precip_record,recRainYr:+t.precip_daily_record_yr}}function drawCharts(){var t=d3.extent(data,function(t){return t.date}),e=t[0].getUTCFullYear(),a=t[1].getUTCFullYear(),c=d3.select("#chart-container").attr("class","year").append("h2").style("margin","auto").style("width","90%").style("text-align","center").text(a),r=(d3.select("#chart-container").append("div").attr("id","slider-div").style("margin","1% auto").style("max-width","1000px").style("width","75%"),d3.select("#slider-div").append("h3").text(e).style("float","left").style("margin","0"),d3.select("#slider-div").append("h3").text(a).style("float","right").style("margin","0"),d3.select("#slider-div").append("div").attr("id","input-div").style("margin","auto").style("width","75%"),d3.select("#input-div").append("input").attr("type","range").attr("id","slider").attr("min",e).attr("max",a).attr("step",1).attr("value",a).style("margin","0").style("width","100%"),.99*parseInt(d3.select("#chart-container").style("width"))),l=(d3.select("#chart-container").style("width",r+"px").style("margin","auto"),1*parseInt(d3.select("#chart-container").style("width")));console.log("w:",l);var s=l/1.75,n=s/29,i=s/12.5,d=l/20,o=l/100,p=d3.select("#chart-container").append("svg").attr("width",l+"px").attr("height",s+"px"),y=(d3.select("#chart-container").append("div").attr("id","button-container").style("margin","0.5% auto").style("width","75%"),data.filter(function(t){return t.date>new Date("2016, 12, 31")&&t.date<new Date("2017, 12, 31")}));console.log("fd:",y);var u=d3.extent(y,function(t){return t.date}),h=d3.scaleTime().domain([u[0],u[1]]).range([0+d,l-o]),x=d3.min(y,function(t){return t.recMin}),f=d3.max(y,function(t){return t.recMax}),g=d3.scaleLinear().domain([-25,115]).range([s-i,0+n]),m=d3.scaleBand().domain(["Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"]).range([0+d,l-o]).paddingInner(.05).paddingOuter(.025),v=p.append("g").attr("class","chart-paths"),w=d3.line().defined(function(t){return t.recMax}).curve(d3.curveStep).x(function(t){return h(t.date)}).y(function(t){return g(t.recMax)}),k=(v.append("path").datum(y).attr("class","crimson").attr("d",w).style("fill","none").style("opacity",1).style("stroke","crimson").style("stroke-width",s/280),d3.line().defined(function(t){return t.recMin}).curve(d3.curveStep).x(function(t){return h(t.date)}).y(function(t){return g(t.recMin)})),b=(v.append("path").datum(y).attr("class","dodgerBlue").attr("d",k).style("fill","none").style("opacity",1).style("stroke","dodgerBlue").style("stroke-width",s/280),d3.area().defined(function(t){return t.avgMin&&t.avgMax}).curve(d3.curveStep).x(function(t){return h(t.date)}).y0(function(t){return g(t.avgMin)}).y1(function(t){return g(t.avgMax)})),M=(v.append("path").datum(y).attr("class","gray").attr("d",b).style("fill","lightGray").style("opacity",.75).style("stroke","black").style("stroke-width",s/750),d3.area().defined(function(t){return t.dayMin&&t.dayMax}).curve(d3.curveStep).x(function(t){return h(t.date)}).y0(function(t){return g(t.dayMin)}).y1(function(t){return g(t.dayMax)})),R=(v.append("path").datum(y).attr("class","orange").attr("d",M).style("fill","darkOrange").style("opacity",.66).style("stroke","black").style("stroke-width",s/500),v.append("text").attr("x",h(new Date("2017, 4, 24"))).attr("y",g(102.5)).attr("fill","crimson").attr("font-size",l/50).attr("font-weight","bold").attr("text-anchor","end").text("Record daily high"),v.append("text").attr("x",h(new Date("2017, 4, 24"))).attr("y",g(92.5)).attr("fill","darkOrange").attr("font-size",l/50).attr("font-weight","bold").attr("text-anchor","end").text("Daily high/low"),v.append("text").attr("x",h(new Date("2017, 4, 24"))).attr("y",g(10)).attr("fill","darkGray").attr("font-size",l/50).attr("font-weight","bold").attr("text-anchor","end").text("Avg. daily high/low"),v.append("text").attr("x",h(new Date("2017, 4, 24"))).attr("y",g(0)).attr("fill","dodgerBlue").attr("font-size",l/50).attr("font-weight","bold").attr("text-anchor","end").text("Record low"),v.append("text").attr("x",h(new Date("2017, 6, 30"))).attr("y",g(-14)).attr("fill","teal").attr("font-size",l/50).attr("font-weight","bold").attr("text-anchor","middle").text("Daily precipitation"),p.append("g").attr("class","month-labels")),D=R.selectAll("g").data(d3.range(1,13,1)).enter().append("g");D.append("line").filter(function(t){return 1!==t}).attr("class","vertical").attr("x1",function(t){return h(new Date("2017, "+t+", 1"))}).attr("y1",g.range()[1]).attr("x2",function(t,e){return h(new Date("2017, "+t+", 1"))}).attr("y2",s-i).attr("stroke","dimGray").attr("stroke-dasharray","5,5").style("stroke-width",s/800),D.append("text").attr("class","month").attr("x",function(t){return h(new Date("2017, "+t+", 1"))+m.bandwidth()/2}).attr("y",g.range()[1]+1).attr("font-size",l/55+"px").attr("text-anchor","middle").text(function(t){return new Date("2017, "+t+", 1").toString().split(" ")[1]});for(var _=l/23,C=l/26,A=p.append("g").attr("class","yAxis"),z=(A.append("line").attr("x1",_).attr("y1",g(f)).attr("x2",_).attr("y2",g(x)).attr("stroke","black").attr("stroke-width",s/500),A.append("line").attr("x1",_-l/200).attr("y1",g(f)).attr("x2",_+l/200).attr("y2",g(f)).style("stroke","crimson").attr("stroke-width",s/400),A.append("text").attr("x",C).attr("y",g(f-1.25)).attr("fill","crimson").attr("font-size",s/40).attr("text-anchor","end").text(f+"°F"),A.append("line").attr("x1",_-l/200).attr("y1",g(x)).attr("x2",_+l/200).attr("y2",g(x)).style("stroke","dodgerBlue").attr("stroke-width",s/400),A.append("text").attr("x",C).attr("y",g(x-1.25)).attr("fill","dodgerBlue").attr("font-size",s/40).attr("text-anchor","end").text(x+"°F"),10);z<=100;z+=20)A.append("line").attr("x1",_-l/200).attr("y1",g(z)).attr("x2",_+l/200).attr("y2",g(z)).attr("stroke-width",s/400),A.append("text").attr("x",C).attr("y",g(z)).attr("font-size",s/40).attr("text-anchor","end").text(z+"°F");var T=p.append("g").attr("class","xAxis").attr("transform","translate(0,"+(s-i)+")").style("font-size",l/75+"px").style("text-anchor","middle").call(d3.axisBottom(h).tickFormat(d3.timeFormat("%b-%d")).ticks(10)),B=p.append("g").attr("class","rain-chart"),S=d3.extent(data,function(t){return+t.cRain}),F=d3.scaleLinear().domain([0,S[1]]).range([g(g.domain()[0]),g(x)]);B.selectAll("rect.rain-bars").data(y,function(t){return t.date}).enter().append("rect").attr("class","rain-bars").attr("x",function(t){return h(t.date)}).attr("y",function(t){return"T"===t.cRain?F(0):F(+t.cRain)}).attr("width",l/475).attr("height",function(t){return F.range()[0]-("0"===t.cRain?F(1e-4):"T"===t.cRain?F(.001):F(+t.cRain))}).attr("fill","teal").attr("opacity",1).append("title").text(function(t){return t.date.toUTCString()+": "+t.cRain+'"'});d3.select("#button-container").append("button").attr("id","sort").text("Sort by Inches").classed("button",!0).classed("active",!1).style("color","white").style("font-size","small").style("font-weight","bold").style("padding","0.5%").style("width","50%").style("border","2.5px solid white");d3.select("#sort").on("click",function(){d3.select("#sort").classed("active",!0),d3.select("#sort2").classed("active",!1),U()});var U=function(){var a=d3.scaleBand().domain(d3.range(1,366,1)).range([0+d,l-o]);d3.selectAll("rect.rain-bars").sort(function(t,e){var a="T"===t.cRain?.001:""===t.cRain?0:+t.cRain,r="T"===e.cRain?.001:""===e.cRain?0:+e.cRain;return d3.descending(a,r)}).transition().duration(1e3).attr("x",function(t,e){return a(e+1)})};d3.select("#button-container").append("button").attr("id","sort2").text("Sort by Date").classed("button",!0).classed("active",!0).style("color","white").style("font-size","small").style("font-weight","bold").style("padding","0.5%").style("width","50%").style("border","2.5px solid white");d3.select("#sort2").on("click",function(){T.call(d3.axisBottom(h).tickFormat(d3.timeFormat("%b-%d")).ticks(10)),d3.select("#sort2").classed("active",!0),d3.select("#sort").classed("active",!1),d3.selectAll("rect.rain-bars").transition().duration(1e3).attr("x",function(t){return h(t.date)})});for(var O=p.append("g").attr("class","my-rainAxis-"),W=(O.append("line").attr("x1",_).attr("y1",F(2)).attr("x2",_).attr("y2",F(S[0])).attr("stroke","black").attr("stroke-width",s/500),0);W<=2;W++)O.append("line").attr("x1",_-l/200).attr("y1",F(W)).attr("x2",_+l/200).attr("y2",F(W)).attr("stroke",1===W?"teal":"black").attr("stroke-width",s/400),A.append("text").attr("x",C).attr("y",F(W-.1)).attr("fill","teal").attr("font-size",s/35).attr("text-anchor","end").text(0===W||2===W?"":W+'"');for(var Y=1;Y<=2;Y++)B.append("line").attr("class","rain-gridlines").attr("x1",h(new Date("2016, 12, 31"))).attr("y1",F(Y)).attr("x2",h(new Date("2017, 12, 31"))).attr("y2",F(Y)).style("stroke-width",s/250).attr("opacity",1).attr("pointer-events","none");var G=p.append("g").attr("class","hover"),I=G.selectAll("rect.hover").data(y).enter().append("rect").attr("class","hover").attr("x",function(t){return h(t.date)}).attr("y",function(t){return g(f)}).attr("width",l/475).attr("height",g(g.domain()[0])-g(f)).attr("fill","black").attr("cursor","crosshair").attr("opacity",0);function L(t){var e=t.date.toUTCString().split(",")[1],a=(G.append("text").attr("class","hoverCirc").attr("x",h(t.date)).attr("y",g(g.domain()[1]-5)).attr("text-anchor","middle").attr("font-size",l/75).attr("font-weight","bold").text(e.slice(0,3)),G.append("circle").attr("class","hoverCirc").attr("cx",h(t.date)).attr("cy",g(t.recMax)).attr("r",l/105).attr("fill","crimson").attr("stroke","black").attr("stroke-width",l/1500).attr("opacity",.75).attr("pointer-events","none"),G.append("circle").attr("class","hoverCirc").attr("cx",h(t.date)).attr("cy",g(t.recMin)).attr("r",l/105).attr("fill","dodgerBlue").attr("stroke","black").attr("stroke-width",l/1500).attr("opacity",.75).attr("pointer-events","none"),G.append("circle").attr("class","hoverCirc").attr("cx",h(t.date)).attr("cy",g(t.dayMax)).attr("r",l/105).attr("fill","darkOrange").attr("stroke","black").attr("stroke-width",l/1500).attr("opacity",0===t.dayMax?0:.75).attr("pointer-events","none"),G.append("circle").attr("class","hoverCirc").attr("cx",h(t.date)).attr("cy",g(t.dayMin)).attr("r",l/105).attr("fill","darkOrange").attr("stroke","black").attr("stroke-width",l/1500).attr("opacity",0===t.dayMax?0:.75).attr("pointer-events","none"),G.append("text").attr("class","hoverCirc").attr("x",h(t.date)).attr("y",g(t.recMax-1.5)).attr("fill","black").attr("font-size",l/75).attr("font-weight","bold").attr("text-anchor","middle").attr("pointer-events","none").text(t.recMax),G.append("text").attr("class","hoverCirc").attr("x",h(t.date)).attr("y",g(t.recMin-1.5)).attr("fill","black").attr("font-size",l/75).attr("font-weight","bold").attr("text-anchor","middle").attr("pointer-events","none").text(t.recMin),G.append("text").attr("class","hoverCirc").attr("x",h(t.date)).attr("y",g(t.dayMax-1.5)).attr("fill","black").attr("font-size",l/75).attr("font-weight","bold").attr("text-anchor","middle").attr("opacity",0===t.dayMax?0:.75).attr("pointer-events","none").text(t.dayMax),G.append("text").attr("class","hoverCirc").attr("x",h(t.date)).attr("y",g(t.dayMin-1.5)).attr("fill","black").attr("font-size",l/75).attr("font-weight","bold").attr("text-anchor","middle").attr("opacity",0===t.dayMax?0:.75).attr("pointer-events","none").text(t.dayMin),+t.cRain);G.append("text").attr("class","hoverCirc").attr("x",h(t.date)-l/110).attr("y","T"===t.cRain?F(.1):F(+t.cRain+.05)).attr("fill","teal").attr("font-size",l/70).attr("font-weight","bolder").attr("stroke","white").attr("stroke-width",l/1750).attr("text-anchor","start").attr("text-anchor",(t.cRain,"start")).attr("pointer-events","none").text("T"===t.cRain?"Trace":""===t.cRain?"":"0"===t.cRain?a.toFixed(1)+'"':a+'"')}I.append("title").text(function(t){return t.date.toUTCString()}),I.on("mouseover",function(t){L(t)}).on("mouseout",function(t){d3.selectAll(".hoverCirc").remove()}),d3.select("#slider").on("change",function(){var a=+d3.select(this).node().value;c.text(a);var t=data.filter(function(t){return t.date>new Date(a-1+", 12, 31")&&t.date<new Date(a+", 12, 31")}),e=d3.extent(t,function(t){return t.date});h.domain([e[0],e[1]]),T.call(d3.axisBottom(h).tickFormat(d3.timeFormat("%b-%d")).ticks(10)),d3.selectAll("path.dodgerBlue").datum(t).transition().duration(1e3).attr("class","dodgerBlue").attr("d",k).style("fill","none").style("opacity",1).style("stroke","dodgerBlue").style("stroke-width",s/280),d3.selectAll("path.crimson").datum(t).transition().duration(1e3).attr("class","crimson").attr("d",w).style("fill","none").style("opacity",1).style("stroke","crimson").style("stroke-width",s/280),d3.selectAll("path.gray").datum(t).transition().duration(1e3).attr("class","gray").attr("d",b).style("fill","lightGray").style("opacity",.75).style("stroke","black").style("stroke-width",s/750),d3.selectAll("path.orange").datum(t).transition().duration(1e3).attr("class","orange").attr("d",M).style("fill","darkOrange").style("opacity",.66).style("stroke","black").style("stroke-width",s/500);var r=B.selectAll("rect").data(t,function(t){return t.date});r.exit().remove();var n=r.enter().append("rect").attr("class","rain-bars").attr("x",function(t){return h(t.date)}).attr("y",function(t){return"T"===t.cRain?F(0):F(+t.cRain)}).attr("width",l/475).attr("height",function(t){return F.range()[0]-("0"===t.cRain?F(1e-4):"T"===t.cRain?F(.001):F(+t.cRain))}).attr("fill","teal").attr("opacity",1);n.append("title").text(function(t){return t.date.toUTCString()+": "+t.cRain+'"'});n.merge(r).transition().duration(750).on("start",function(){d3.select(this).attr("y",function(t){return F(0)}).attr("height",0)}).transition().duration(500).ease(d3.easeBackOut).attr("y",function(t){return"T"===t.cRain?F(0):F(+t.cRain)}).attr("height",function(t){return F.range()[0]-("0"===t.cRain?F(1e-4):"T"===t.cRain?F(.001):F(+t.cRain))});for(var i=1;i<=2;i++)B.append("line").attr("class","rain-gridlines").attr("x1",h(new Date(a-1+", 12, 31"))).attr("y1",F(i)).attr("x2",h(new Date(a+", 12, 31"))).attr("y2",F(i)).style("stroke-width",s/250).attr("opacity",1).attr("pointer-events","none");var d=G.selectAll("rect").data(t,function(t){return t.date});d.exit().remove();var o=d.enter().append("rect").attr("class","hover").attr("x",function(t){return h(t.date)}).attr("y",function(t){return g(f)}).attr("width",l/475).attr("height",g(g.domain()[0])-g(f)).attr("fill","black").attr("cursor","crosshair").attr("opacity",0);o.append("title").text(function(t){return t.date.toUTCString()}),o.on("mouseover",function(t){L(t)}).on("mouseout",function(t){d3.selectAll(".hoverCirc").remove()}),R.selectAll("line").data(d3.range(1,13,1)).filter(function(t){return 1!==t}).attr("x1",function(t){return h(new Date(a+", "+t+", 1"))}).attr("x2",function(t,e){return h(new Date(a+", "+t+", 1"))}),R.selectAll("text").data(d3.range(1,13,1)).attr("x",function(t){return h(new Date(a+", "+t+", 1"))+m.bandwidth()/2})});d3.select("#chart-container").append("h4").style("margin","1% auto").style("max-width","1000px").style("width","90%").style("text-align","center").html('Source: <a href="http://w2.weather.gov/climate/index.php" target="_blank">National Weather Service</a>')}d3.csv(dataURL,rowConvert,function(t){data=t,drawCharts()});
+let data;
+const dataURL = 'https://gist.githubusercontent.com/mendozaline/75f31235d6f3ebb58189aad1ee748e64/raw/a46417057794f94055b98404c208737cadee9fd0/pdx-weather.csv'
+
+const rowConvert = (d) => {
+  return {
+    date: new Date(d.date),
+    dayMin: +d.daily_temp_min,
+    dayMax: +d.daily_temp_max,
+    avgMin: +d.avg_temp_min,
+    avgMax: +d.avg_temp_max,
+    recMin: +d.rec_temp_min,
+    recMax: +d.rec_temp_max,
+    recMinYr: +d.rec_temp_min_yr,
+    recMaxYr: +d.rec_temp_max_yr,
+    cRain: d.daily_precip,
+    recRain: +d.daily_precip_record,
+    recRainYr: +d.precip_daily_record_yr
+  }
+}
+
+d3.csv(dataURL, rowConvert, weather => {
+    data = weather
+    drawCharts()
+})
+
+const drawCharts = () => {
+  const chartWidth = parseInt(d3.select('body').style('width')) * 0.947
+  const chartHeight = chartWidth / 2
+
+  const chartDiv = d3.select('#charts')
+    .append('div')
+    .attr('id', 'chart-1')
+    .style('width', chartWidth + 'px')
+    .style('margin', 'auto')
+
+  const w = parseInt(d3.select('#chart-1').style('width')) * 1
+  const h = w / 2
+  const pad = {top:h/29, bottom:h/12.5, left:w/20, right:w/100}
+
+  const yearRange = d3.extent(data, d => d.date)
+  const startYear = yearRange[0].getUTCFullYear()
+  const endYear = yearRange[1].getUTCFullYear()
+
+  const currentYr = d3.select('#chart-1')
+    .append('h3')
+    .text(2017)
+    .attr('id', 'year')
+    .style('margin', 'auto')
+    .style('width', '90%')
+    .style('text-align', 'center')
+
+  const sliderDiv = d3.select('#chart-1')
+    .append('div')
+    .attr('id', 'slider-div')
+    .style('margin', '1% auto')
+    .style('max-width', '1000px')
+    .style('width', '75%')
+
+  const yearLabelStart = d3.select('#slider-div')
+    .append('h3')
+    .text(startYear)
+    .style('float', 'left')
+    .style('margin', '0')
+
+  const yearLabelEnd = d3.select('#slider-div')
+    .append('h3')
+    .text(endYear)
+    .style('float', 'right')
+    .style('margin', '0')
+
+  const inputDiv = d3.select('#slider-div')
+    .append('div')
+    .attr('id', 'input-div')
+    .style('margin', 'auto')
+    .style('width', '75%')
+
+  const slider = d3.select('#input-div')
+    .append('input')
+    .attr('type', 'range')
+    .attr('id', 'slider')
+    .attr('min', startYear)
+    .attr('max', endYear)
+    .attr('step', 1)
+    .attr('value', 2017)
+    .style('margin', '0')
+    .style('width', '100%')
+    .style('background-color', 'white')
+    .style('border', '1px solid white')
+
+   const svg = d3.select('#chart-1')
+    .append('svg')
+    .attr('width', w + 'px')
+    .attr('height', h + 'px')
+
+  const filterData2017 = data.filter(d => {
+    return d.date > new Date('2016, 12, 31') && d.date < new Date('2017, 12, 31')
+  })
+
+  const xMinMax = d3.extent(filterData2017, d => d.date)
+  const xScale = d3.scaleTime()
+    .domain([xMinMax[0], xMinMax[1]])
+    .range([0 + pad.left, w - pad.right])
+
+  const yMin = d3.min(filterData2017, d => d.recMin)
+  const yMax = d3.max(filterData2017, d => d.recMax)
+  const yScale = d3.scaleLinear()
+    .domain([-25, 115])
+    .range([h - pad.bottom, 0 + pad.top])
+
+  const months = ['Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+  const xBand = d3.scaleBand()
+    .domain(months)
+    .range([0 + pad.left, w - pad.right])
+    .paddingInner(0.05)
+    .paddingOuter(0.025)
+
+  const areaLineG = svg.append('g')
+    .attr('class', 'chart-paths')
+
+  const maxLineGen = d3.line()
+    .defined(d => d.recMax)
+    .curve(d3.curveStep)
+    .x(d => xScale(d.date))
+    .y(d => yScale(d.recMax))
+
+  const maxLine = areaLineG.append('path')
+    .datum(filterData2017)
+    .attr('class', 'crimson')
+    .attr('d', maxLineGen)
+    .style('fill', 'none')
+    .style('opacity', 1.0)
+    .style('stroke', 'crimson')
+    .style('stroke-width', h/280)
+
+  const minLineGen = d3.line()
+    .defined(d => d.recMin)
+    .curve(d3.curveStep)
+    .x(d => xScale(d.date))
+    .y(d => yScale(d.recMin))
+
+  const minLine = areaLineG.append('path')
+    .datum(filterData2017)
+    .attr('class', 'dodgerBlue')
+    .attr('d', minLineGen)
+    .style('fill', 'none')
+    .style('opacity', 1.0)
+    .style('stroke', 'dodgerBlue')
+    .style('stroke-width', h/280)
+
+  const avgAreaGen = d3.area()
+    .defined(d => d.avgMin && d.avgMax)
+    .curve(d3.curveStep)
+    .x(d => xScale(d.date))
+    .y0(d => yScale(d.avgMin))
+    .y1(d => yScale(d.avgMax))
+
+  const avgArea = areaLineG.append('path')
+    .datum(filterData2017)
+    .attr('class', 'gray')
+    .attr('d', avgAreaGen)
+    .style('fill', 'lightGray')
+    .style('opacity', 0.75)
+    .style('stroke', 'black')
+    .style('stroke-width', h/750)
+
+  const dayAreaGen = d3.area()
+    .defined(d => d.dayMin && d.dayMax)
+    .curve(d3.curveStep)
+    .x(d => xScale(d.date))
+    .y0(d => yScale(d.dayMin))
+    .y1(d => yScale(d.dayMax))
+
+  const dayArea = areaLineG.append('path')
+    .datum(filterData2017)
+    .attr('class', 'orange')
+    .attr('d', dayAreaGen)
+    .style('fill', 'darkOrange')
+    .style('opacity', 0.66)
+    .style('stroke', 'black')
+    .style('stroke-width', h/500)
+
+  const maxLabel = areaLineG.append('text')
+    .attr('x', xScale(new Date('2017, 4, 24')) )
+    .attr('y', yScale(102.5) )
+    .attr('fill', 'crimson')
+    .attr('font-size', w/50)
+    .attr('font-weight', 'bold')
+    .attr('text-anchor', 'end')
+    .text('Record daily high')
+
+  const dailyLabel = areaLineG.append('text')
+    .attr('x', xScale(new Date('2017, 4, 24')) )
+    .attr('y', yScale(92.5) )
+    .attr('fill', 'darkOrange')
+    .attr('font-size', w/50)
+    .attr('font-weight', 'bold')
+    .attr('text-anchor', 'end')
+    .text('Daily high/low')
+
+  const avgLabel = areaLineG.append('text')
+    .attr('x', xScale(new Date('2017, 4, 24')) )
+    .attr('y', yScale(10) )
+    .attr('fill', 'darkGray')
+    .attr('font-size', w/50)
+    .attr('font-weight', 'bold')
+    .attr('text-anchor', 'end')
+    .text('Avg. daily high/low')
+
+  const minLabel = areaLineG.append('text')
+    .attr('x', xScale(new Date('2017, 4, 24')) )
+    .attr('y', yScale(0) )
+    .attr('fill', 'dodgerBlue')
+    .attr('font-size', w/50)
+    .attr('font-weight', 'bold')
+    .attr('text-anchor', 'end')
+    .text('Record low')
+
+  const rainLabel = areaLineG.append('text')
+    .attr('x', xScale(new Date('2017, 6, 30')) )
+    .attr('y', yScale(-14) )
+    .attr('fill', 'teal')
+    .attr('font-size', w/50)
+    .attr('font-weight', 'bold')
+    .attr('text-anchor', 'middle')
+    .text('Daily precipitation')
+
+  const monthG = svg.append('g')
+    .attr('class', 'month-labels')
+
+  const monthGG = monthG.selectAll('g')
+    .data(d3.range(1,13,1))
+    .enter()
+    .append('g')
+
+  monthGG.append('line')
+    .filter(d => d !== 1)
+    .attr('class', 'vertical')
+    .attr('x1', d => xScale(new Date('2017, ' + d + ', 1')))
+    .attr('y1', yScale.range()[1])
+    .attr('x2', d => xScale(new Date('2017, ' + d + ', 1')))
+    .attr('y2', h - pad.bottom)
+    .attr('stroke', 'dimGray')
+    .attr('stroke-dasharray', '5,5')
+    .style('stroke-width', h/800)
+
+  monthGG.append('text')
+    .attr('class', 'month')
+    .attr('x', d => xScale(new Date('2017, ' + d + ', 1')) + xBand.bandwidth()/2)
+    .attr('y', yScale.range()[1] + 1)
+    .attr('font-size', w/55 + 'px')
+    .attr('text-anchor', 'middle')
+    .text(d => new Date('2017, ' + (d) + ', 1').toString().split(' ')[1])
+
+  const xLinePos = w/23
+  const xTextPos = w/26
+  const customYAxis = svg.append('g')
+    .attr('class', 'yAxis')
+
+  const yLineAxis2 = customYAxis.append('line')
+    .attr('x1', xLinePos)
+    .attr('y1', yScale(yMax))
+    .attr('x2', xLinePos)
+    .attr('y2', yScale(yMin))
+    .attr('stroke', 'black')
+    .attr('stroke-width', h/500)
+
+  const axisMaxLine = customYAxis.append('line')
+    .attr('x1', xLinePos - w/200)
+    .attr('y1', yScale(yMax))
+    .attr('x2', xLinePos + w/200)
+    .attr('y2', yScale(yMax))
+    .style('stroke', 'crimson')
+    .attr('stroke-width', h/400)
+  const axisMinText = customYAxis.append('text')
+    .attr('x', xTextPos)
+    .attr('y', yScale(yMax - 1.25))
+    .attr('fill', 'crimson')
+    .attr('font-size', h/40)
+    .attr('text-anchor', 'end')
+    .text(yMax + '°F')
+
+  const axisMinLine = customYAxis.append('line')
+    .attr('x1', xLinePos - w/200)
+    .attr('y1', yScale(yMin))
+    .attr('x2', xLinePos + w/200)
+    .attr('y2', yScale(yMin))
+    .style('stroke', 'dodgerBlue')
+    .attr('stroke-width', h/400)
+  const axisMinText2 = customYAxis.append('text')
+    .attr('x', xTextPos)
+    .attr('y', yScale(yMin - 1.25))
+    .attr('fill', 'dodgerBlue')
+    .attr('font-size', h/40)
+    .attr('text-anchor', 'end')
+    .text(yMin + '°F')
+
+  for (let ww = 10 ; ww <= 100; ww+=20) {
+    customYAxis.append('line')
+      .attr('x1', xLinePos - w/200)
+      .attr('y1', yScale(ww) )
+      .attr('x2', xLinePos + w/200)
+      .attr('y2', yScale(ww) )
+      .attr('stroke-width', h/400)
+
+    customYAxis.append('text')
+      .attr('x', xTextPos)
+      .attr('y', yScale(ww))
+      .attr('font-size', h/40)
+      .attr('text-anchor', 'end')
+      .text(ww + '°F')
+  }
+
+  const xAxis = svg.append('g')
+    .attr('class', 'xAxis')
+    .attr('transform', 'translate('+ 0 + ',' + (h - pad.bottom) + ')')
+    .style('font-size', w/75 + 'px')
+    .style('text-anchor', 'middle')
+    .call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%b-%d')).ticks(10))
+
+  const rainChart = svg.append('g')
+    .attr('class', 'rain-chart')
+
+  const yRainMinMax = d3.extent(data, d => +d.cRain)
+  const yScaleRain = d3.scaleLinear()
+    .domain([0, yRainMinMax[1]])
+    .range([yScale(yScale.domain()[0]), yScale(yMin)])
+
+  const rainRects = rainChart.selectAll('rect.rain-bars')
+    .data(filterData2017, d => d.date)
+    .enter()
+    .append('rect')
+    .attr('class', 'rain-bars')
+    .attr('x', d => xScale(d.date))
+    .attr('y', d => d.cRain === 'T' ? yScaleRain(0) : yScaleRain(+d.cRain))
+    .attr('width', w/475)
+    .attr('height', d => yScaleRain.range()[0] - (d.cRain === '0' ? yScaleRain(0.0001) : d.cRain === 'T' ? yScaleRain(0.001) : yScaleRain(+d.cRain)))
+    .attr('fill', 'teal')
+    .attr('opacity', 1.0)
+
+  rainRects.append('title')
+    .text(d => d.date.toUTCString() + ': ' + d.cRain + '"')
+
+  const customRainAxis = svg.append('g')
+    .attr('class', 'my-rainAxis-')
+
+  const yLineAxis = customRainAxis.append('line')
+    .attr('x1', xLinePos)
+    .attr('y1', yScaleRain(2) )
+    .attr('x2', xLinePos)
+    .attr('y2', yScaleRain(yRainMinMax[0]) )
+    .attr('stroke', 'black')
+    .attr('stroke-width', h/500)
+
+  for (let m = 0; m <= 2; m++) {
+    customRainAxis.append('line')
+      .attr('x1', xLinePos - w/200)
+      .attr('y1', yScaleRain(m))
+      .attr('x2', xLinePos + w/200)
+      .attr('y2', yScaleRain(m))
+      .attr('stroke', m === 1 ? 'teal' : 'black')
+      .attr('stroke-width', h/400)
+
+    customYAxis.append('text')
+      .attr('x', xTextPos)
+      .attr('y', yScaleRain(m - 0.1))
+      .attr('fill', 'teal')
+      .attr('font-size', h/35)
+      .attr('text-anchor', 'end')
+      .text(m === 0 || m === 2 ? '' : m + '"')
+  }
+
+  for (let n = 1; n <= 2; n++) {
+    rainChart.append('line')
+      .attr('class', 'rain-gridlines')
+      .attr('x1', xScale(new Date('2016, 12, 31')))
+      .attr('y1', yScaleRain(n))
+      .attr('x2', xScale(new Date('2017, 12, 31')))
+      .attr('y2', yScaleRain(n))
+      .attr('stroke', 'white')
+      .style('stroke-width', h/250)
+      .attr('opacity', 1.0)
+      .attr('pointer-events', 'none')
+  }
+
+  let chartHover = svg.append('g')
+    .attr('class', 'hover')
+
+  let hoverRects = chartHover.selectAll('rect.hover')
+    .data(filterData2017)
+    .enter()
+    .append('rect')
+    .attr('class', 'hover')
+    .attr('x', d => xScale(d.date))
+    .attr('y', d => yScale(yMax))
+    .attr('width', w/475)
+    .attr('height', yScale(yScale.domain()[0]) - yScale(yMax)) //top
+    .attr('fill', 'black')
+    .attr('cursor', 'crosshair')
+    .attr('opacity', 0.0)
+
+  hoverRects.append('title')
+    .text(d => d.date.toUTCString())
+
+  let hovered = (dd,i) => {
+    let thisDay = dd.date.toUTCString().split(',')[1]
+    let date = chartHover.append('text')
+      .attr('class', 'hoverCirc')
+      .attr('x', xScale(dd.date))
+      .attr('y', yScale(yScale.domain()[1] - 5))
+      .attr('text-anchor', 'middle')
+      .attr('font-size', w/75)
+      .attr('font-weight', 'bold')
+      .text(thisDay.slice(0,3))
+
+    let recMax = chartHover.append('circle')
+      .attr('class', 'hoverCirc')
+      .attr('cx', xScale(dd.date))
+      .attr('cy', yScale(dd.recMax))
+      .attr('r', w/105)
+      .attr('fill', 'crimson')
+      .attr('stroke', 'black')
+      .attr('stroke-width', w/1500)
+      .attr('opacity', 0.75)
+      .attr('pointer-events', 'none')
+
+    let recMin = chartHover.append('circle')
+      .attr('class', 'hoverCirc')
+      .attr('cx', xScale(dd.date))
+      .attr('cy', yScale(dd.recMin))
+      .attr('r', w/105)
+      .attr('fill', 'dodgerBlue')
+      .attr('stroke', 'black')
+      .attr('stroke-width', w/1500)
+      .attr('opacity', 0.75)
+      .attr('pointer-events', 'none')
+
+    let dayMax = chartHover.append('circle')
+      .attr('class', 'hoverCirc')
+      .attr('cx', xScale(dd.date))
+      .attr('cy', yScale(dd.dayMax))
+      .attr('r', w/105)
+      .attr('fill', 'darkOrange')
+      .attr('stroke', 'black')
+      .attr('stroke-width', w/1500)
+      .attr('opacity', dd.dayMax === 0 ? 0.0 : 0.75)
+      .attr('pointer-events', 'none')
+
+    let dayMin = chartHover.append('circle')
+      .attr('class', 'hoverCirc')
+      .attr('cx', xScale(dd.date))
+      .attr('cy', yScale(dd.dayMin))
+      .attr('r', w/105)
+      .attr('fill', 'darkOrange')
+      .attr('stroke', 'black')
+      .attr('stroke-width', w/1500)
+      .attr('opacity', dd.dayMax === 0 ? 0.0 : 0.75)
+      .attr('pointer-events', 'none')
+
+    recMax = chartHover.append('text')
+      .attr('class', 'hoverCirc')
+      .attr('x', xScale(dd.date))
+      .attr('y', yScale(dd.recMax - 1.5))
+      .attr('fill', 'black')
+      .attr('font-size', w/75)
+      .attr('font-weight', 'bold')
+      .attr('text-anchor', 'middle')
+      .attr('pointer-events', 'none')
+      .text(dd.recMax)
+
+    recMin = chartHover.append('text')
+      .attr('class', 'hoverCirc')
+      .attr('x', xScale(dd.date))
+      .attr('y', yScale(dd.recMin - 1.5))
+      .attr('fill', 'black')
+      .attr('font-size', w/75)
+      .attr('font-weight', 'bold')
+      .attr('text-anchor', 'middle')
+      .attr('pointer-events', 'none')
+      .text(dd.recMin)
+
+    dayMax = chartHover.append('text')
+      .attr('class', 'hoverCirc')
+      .attr('x', xScale(dd.date))
+      .attr('y', yScale(dd.dayMax - 1.5))
+      .attr('fill', 'black')
+      .attr('font-size', w/75)
+      .attr('font-weight', 'bold')
+      .attr('text-anchor', 'middle')
+      .attr('opacity', dd.dayMax === 0 ? 0.0 : 0.75)
+      .attr('pointer-events', 'none')
+      .text(dd.dayMax)
+
+    dayMin = chartHover.append('text')
+      .attr('class', 'hoverCirc')
+      .attr('x', xScale(dd.date))
+      .attr('y', yScale(dd.dayMin - 1.5))
+      .attr('fill', 'black')
+      .attr('font-size', w/75)
+      .attr('font-weight', 'bold')
+      .attr('text-anchor', 'middle')
+      .attr('opacity', dd.dayMax === 0 ? 0.0 : 0.75)
+      .attr('pointer-events', 'none')
+      .text(dd.dayMin)
+
+    let rainText = +dd.cRain
+    let rainInch = chartHover.append('text')
+      .attr('class', 'hoverCirc')
+      .attr('x', xScale(dd.date) - w/110)
+      .attr('y', dd.cRain === 'T' ?  yScaleRain(0 + 0.1) : yScaleRain(+dd.cRain + 0.05))
+      .attr('fill', 'teal')
+      .attr('font-size', w/70)
+      .attr('font-weight', 'bolder')
+      .attr('stroke', 'white')
+      .attr('stroke-width', w/1750)
+      .attr('text-anchor', 'start')
+      .attr('text-anchor', dd.cRain === 'T' ?  'start' : 'start')
+      .attr('pointer-events', 'none')
+      .text(dd.cRain === 'T' ?  'Trace' :
+            dd.cRain === '' ? '' :
+            dd.cRain === '0' ? rainText.toFixed(1) + '"' : rainText + '"')
+  }
+
+  hoverRects.on('mouseover', (d,i) => {
+    hovered(d,i)
+  })
+  .on('mouseout', d => {
+    d3.selectAll('.hoverCirc')
+      .remove()
+  })
+
+  d3.select('#slider').on('change', function () {
+    let value = +d3.select(this).node().value
+    currentYr.text(value)
+
+    let filterData = data.filter(d => d.date > new Date( (value - 1) + ', 12, 31') && d.date < new Date(value + ', 12, 31'))
+
+    let xMinMax = d3.extent(filterData, d => d.date)
+    xScale.domain([xMinMax[0], xMinMax[1]])
+    xAxis.call(d3.axisBottom(xScale).tickFormat(d3.timeFormat('%b-%d')).ticks(10))
+
+    d3.selectAll('path.dodgerBlue')
+      .datum(filterData)
+      .transition()
+      .duration(1000)
+      .attr('class', 'dodgerBlue')
+      .attr('d', minLineGen)
+      .style('fill', 'none')
+      .style('opacity', 1.0)
+      .style('stroke', 'dodgerBlue')
+      .style('stroke-width', h/280)
+
+    d3.selectAll('path.crimson')
+      .datum(filterData)
+      .transition()
+      .duration(1000)
+      .attr('class', 'crimson')
+      .attr('d', maxLineGen)
+      .style('fill', 'none')
+      .style('opacity', 1.0)
+      .style('stroke', 'crimson')
+      .style('stroke-width', h/280)
+
+    d3.selectAll('path.gray')
+      .datum(filterData)
+      .transition()
+      .duration(1000)
+      .attr('class', 'gray')
+      .attr('d', avgAreaGen)
+      .style('fill', 'lightGray')
+      .style('opacity', 0.75)
+      .style('stroke', 'black')
+      .style('stroke-width', h/750)
+
+    d3.selectAll('path.orange')
+      .datum(filterData)
+      .transition()
+      .duration(1000)
+      .attr('class', 'orange')
+      .attr('d', dayAreaGen)
+      .style('fill', 'darkOrange')
+      .style('opacity', 0.66)
+      .style('stroke', 'black')
+      .style('stroke-width', h/500)
+
+    let oldBars = rainChart.selectAll('rect')
+      .data(filterData, d => d.date)
+
+    oldBars.exit()
+      .remove()
+
+    let newBars = oldBars.enter()
+      .append('rect')
+      .attr('class', 'rain-bars')
+      .attr('x', d => xScale(d.date))
+      .attr('y', d => d.cRain === 'T' ? yScaleRain(0) : yScaleRain(+d.cRain))
+      .attr('width', w/475)
+      .attr('height', d => yScaleRain.range()[0] - (d.cRain === '0' ? yScaleRain(0.0001) : d.cRain === 'T' ? yScaleRain(0.001) : yScaleRain(+d.cRain)))
+      .attr('fill', 'teal')
+      .attr('opacity', 1.0)
+
+    newBars.append('title')
+      .text(d => d.date.toUTCString() + ': ' + d.cRain + '"' )
+
+    let allBars = newBars.merge(oldBars)
+      .transition()
+      .duration(750)
+      .on('start', function() {
+        d3.select(this)
+          .attr('y', d => yScaleRain(0))
+          .attr('height', 0)
+      })
+      .transition()
+      .duration(500)
+      .ease(d3.easeBackOut)
+      .attr('y', d => d.cRain === 'T' ? yScaleRain(0) : yScaleRain(+d.cRain))
+      .attr('height', d => yScaleRain.range()[0] - (d.cRain === '0' ? yScaleRain(0.0001) : d.cRain === 'T' ? yScaleRain(0.001) : yScaleRain(+d.cRain)))
+
+    for (let n = 1; n <= 2; n++) {
+      rainChart.append('line')
+        .attr('class', 'rain-gridlines')
+        .attr('x1', xScale(new Date((value - 1) + ', 12, 31')))
+        .attr('y1', yScaleRain(n))
+        .attr('x2', xScale(new Date(value + ', 12, 31')))
+        .attr('y2', yScaleRain(n))
+        .attr('stroke', 'white')
+        .style('stroke-width', h/250)
+        .attr('opacity', 1.0)
+        .attr('pointer-events', 'none')
+    }
+
+    let oldHover = chartHover.selectAll('rect')
+      .data(filterData, d => d.date)
+
+    oldHover.exit()
+      .remove()
+
+    let newHover = oldHover.enter()
+      .append('rect')
+      .attr('class', 'hover')
+      .attr('x', d => xScale(d.date))
+      .attr('y', d => yScale(yMax))
+      .attr('width', w/475)
+      .attr('height', yScale(yScale.domain()[0]) - yScale(yMax)) //top
+      .attr('fill', 'black')
+      .attr('cursor', 'crosshair')
+      .attr('opacity', 0.0)
+
+    newHover.append('title')
+      .text(d => d.date.toUTCString())
+
+    newHover.on('mouseover', (d,i) => {
+      hovered(d,i)
+    })
+    .on('mouseout', d => {
+      d3.selectAll('.hoverCirc')
+        .remove()
+    })
+
+    monthG.selectAll('line')
+      .data(d3.range(1,13,1))
+      .filter(d => d !== 1)
+      .attr('x1', d => xScale(new Date(value + ', ' + d + ', 1')))
+      .attr('x2', (d, i) => xScale(new Date(value + ', ' + d + ', 1')))
+
+    monthG.selectAll('text')
+      .data(d3.range(1,13,1))
+      .attr('x', d => xScale(new Date(value + ', ' + d + ', 1')) + xBand.bandwidth()/2)
+  })
+}
+
+const resize = () => {
+  d3.selectAll('div#chart-1').remove()
+  d3.selectAll('svg').remove()
+  drawCharts()
+}
+
+d3.select(window).on('resize', resize);
 </script>
