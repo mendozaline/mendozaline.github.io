@@ -14,11 +14,9 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 title: The Mendoza Line
-email: david@themendozaline.org
 description: Above Average Data Visualizations
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: sen_mendoza
+url: "https://www.themendozaline.org" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  mendozaline
 reddit_username:  sen_mendoza
 tumblr_username: themendozaline
